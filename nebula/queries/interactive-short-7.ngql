@@ -8,7 +8,7 @@ MATCH (m)<-[:REPLY_OF_COMMENT|REPLY_OF_POST]-(c:`Comment`)-[:COMMENT_HAS_CREATOR
    toInteger(substr(id(p), 2)) AS replyAuthorId,
    p.Person.firstName AS replyAuthorFirstName,
    p.Person.lastName AS replyAuthorLastName,
-   CASE r
+   CASE dst(r)
      WHEN null THEN false
      ELSE true
    END AS replyAuthorKnowsOriginalMessageAuthor
