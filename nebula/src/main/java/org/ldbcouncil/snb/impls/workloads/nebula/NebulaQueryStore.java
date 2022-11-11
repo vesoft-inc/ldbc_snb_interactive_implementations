@@ -60,7 +60,7 @@ public class NebulaQueryStore extends QueryStore {
                 .put("countryXName", getConverter().convertString(operation.getCountryXName()))
                 .put("countryYName", getConverter().convertString(operation.getCountryYName()))
                 .put("startDate", getConverter().convertDateTime(operation.getStartDate()))
-                .put("durationDays", operation.getDurationDays())
+                .put("durationDays", getConverter().convertInteger(operation.getDurationDays()))
                 .build();
     }
 
