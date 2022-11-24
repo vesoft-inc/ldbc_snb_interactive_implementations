@@ -1,15 +1,15 @@
 MATCH (person:Person)-[:KNOWS*2]-(friend)-[:IS_LOCATED_IN]->(city:Place)
 WHERE id(person) == $personId AND id(friend) != $personId AND NOT (friend)-[:KNOWS]-(person)
-WITH person, city, friend, datetime({friend.Person.birthday}) as birthday
+WITH person, city, friend, datetime(friend.Person.birthday) as birthday
 WHERE  (birthday.month==$month AND birthday.day>=21) OR
         (birthday.month==($month%12)+1 AND birthday.day<22)
 WITH DISTINCT friend, city, person
 OPTIONAL MATCH (friend)<-[:POST_HAS_CREATOR]-(post:Post)
-WITH friend, city, collect(post) AS posts, person
+OPTIONAL MATCH (person)-[:HAS_INTEREST]->()<-[:HAS_TAG]-(post)
 WITH friend,
      city,
-     size(posts) AS postCount,
-     size([p IN posts WHERE (p)-[:HAS_TAG]->()<-[:HAS_INTEREST]-(person)]) AS commonPostCount
+     count(*) AS postCount,
+     count(post) AS commonPostCount
 RETURN toInteger(substr(id(friend), 2)) AS personId,
        friend.Person.firstName AS personFirstName,
        friend.Person.lastName AS personLastName,
