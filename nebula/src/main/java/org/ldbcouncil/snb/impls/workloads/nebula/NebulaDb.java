@@ -328,7 +328,7 @@ public class NebulaDb  extends BaseDb<NebulaQueryStore> {
 
         @Override
         public LdbcQuery10Result convertSingleResult(ResultSet.Record record) throws UnsupportedEncodingException {
-            long personId = Long.parseLong(record.get(0).asString().substring(NebulaID.ID_PREFIX_SIZE));
+            long personId = record.get(0).asLong();
             String personFirstName = record.get(1).asString();
             String personLastName = record.get(2).asString();
             int commonInterestScore = (int) record.get(3).asLong();
