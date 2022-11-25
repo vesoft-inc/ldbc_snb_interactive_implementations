@@ -1,6 +1,6 @@
 MATCH (person:Person)-[:KNOWS]-(friend)
 WHERE id(person) == $personId
-WITH person, collect(id(person)) AS friends
+WITH person, collect(id(friend)) AS friends
 MATCH (person:Person)-[:KNOWS*2]-(friend)-[:IS_LOCATED_IN]->(city:Place)
 WHERE id(friend) != $personId AND id(friend) NOT IN friends
 WITH person, city, friend, datetime(friend.Person.birthday) as birthday
