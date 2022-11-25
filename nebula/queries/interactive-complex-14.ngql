@@ -1,5 +1,5 @@
 MATCH p = allShortestPaths((person1)-[:KNOWS*..15]-(person2))
-WHERE id(person1) == $person1 and id(person2) == $person2
+WHERE id(person1) == $person1Id and id(person2) == $person2Id
 WITH nodes(p) AS pathNodes
 WITH
   [n IN pathNodes | id(n)] AS personIdsInPath,
