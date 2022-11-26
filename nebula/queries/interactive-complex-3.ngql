@@ -1,4 +1,4 @@
-MATCH (person)-[:KNOWS*1..2]-(friend)-[:IS_LOCATED_IN]->(city:Place)-[:IS_PART_OF]->(country:Place)
+MATCH (person)-[:KNOWS*1..2]-(friend)-[:IS_LOCATED_IN]->(:Place)-[:IS_PART_OF]->(country:Place)
 WHERE id(person) == $personId AND id(friend) != $personId AND country.Place.name != $countryXName AND country.Place.name != $countryYName
 WITH DISTINCT friend
 MATCH (friend)<-[:POST_HAS_CREATOR|COMMENT_HAS_CREATOR]-(message)-[:IS_LOCATED_IN]->(country)
