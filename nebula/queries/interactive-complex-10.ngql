@@ -6,11 +6,11 @@ WHERE id(friend) != $personId AND id(friend) NOT IN friends
 WITH person, city, friend, datetime(friend.Person.birthday) as birthday
 WHERE (birthday.month==$month AND birthday.day>=21) OR
         (birthday.month==($month%12)+1 AND birthday.day<22)
-WITH DISTINCT friend, city, person
-OPTIONAL MATCH (friend)<-[:POST_HAS_CREATOR]-(post:Post)
-OPTIONAL MATCH (person)-[:HAS_INTEREST]->()<-[:HAS_TAG]-(post)
-WITH friend,
-     city,
+WITH DISTINCT friend AS f, city AS c, person AS p
+OPTIONAL MATCH (f)<-[:POST_HAS_CREATOR]-(post:Post)
+OPTIONAL MATCH (p)-[:HAS_INTEREST]->()<-[:HAS_TAG]-(post)
+WITH f AS friend,
+     c AS city,
      count(*) AS postCount,
      count(post) AS commonPostCount
 RETURN toInteger(substr(id(friend), 2)) AS personId,
