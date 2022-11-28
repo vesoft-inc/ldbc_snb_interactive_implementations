@@ -3,13 +3,13 @@ WHERE id(person) == $personId AND id(friend) != $personId AND NOT (friend)-[:KNO
 WITH person, city, friend, datetime(friend.Person.birthday) as birthday
 WHERE  (birthday.month==$month AND birthday.day>=21) OR
         (birthday.month==($month%12)+1 AND birthday.day<22)
-WITH DISTINCT friend, city, person
-OPTIONAL MATCH (friend)<-[:POST_HAS_CREATOR]-(post:Post)
-OPTIONAL MATCH (person)-[:HAS_INTEREST]->()<-[:HAS_TAG]-(post)
-WITH friend,
-     city,
-     count(*) AS postCount,
-     count(post) AS commonPostCount
+WITH DISTINCT friend AS f, city AS c, person AS p
+OPTIONAL MATCH (f)<-[e1:POST_HAS_CREATOR]-(post:Post)
+OPTIONAL MATCH (p)-[e2:HAS_INTEREST]->()<-[:HAS_TAG]-(post)
+WITH f AS friend,
+     c AS city,
+     count(e1) AS postCount,
+     count(e2) AS commonPostCount
 RETURN toInteger(substr(id(friend), 2)) AS personId,
        friend.Person.firstName AS personFirstName,
        friend.Person.lastName AS personLastName,
