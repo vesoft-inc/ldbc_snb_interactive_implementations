@@ -1,5 +1,5 @@
 MATCH (person:Person)-[:KNOWS*2]-(friend)-[:IS_LOCATED_IN]->(city:Place)
-WHERE id(person) == "p-10995116542546" AND id(friend) != "p-10995116542546" AND NOT (friend)-[:KNOWS]-(person)
+WHERE id(person) == $personId AND id(friend) != $personId AND NOT (friend)-[:KNOWS]-(person)
 WITH person, city, friend, datetime(friend.Person.birthday) as birthday
 WHERE  (birthday.month==10 AND birthday.day>=21) OR
         (birthday.month==(10%12)+1 AND birthday.day<22)
