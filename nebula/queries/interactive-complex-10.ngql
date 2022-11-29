@@ -4,12 +4,11 @@ WITH person, city, friend, datetime(friend.Person.birthday) as birthday
 WHERE  (birthday.month==$month AND birthday.day>=21) OR
         (birthday.month==($month%12)+1 AND birthday.day<22)
 WITH DISTINCT friend AS f, city AS c, person AS p
-OPTIONAL MATCH (f)<-[e1:POST_HAS_CREATOR]-(post:Post)
-OPTIONAL MATCH (p)-[e2:HAS_INTEREST]->()<-[:HAS_TAG]-(post)
-WITH f AS friend,
-     c AS city,
-     count(e1) AS postCount,
-     count(e2) AS commonPostCount
+OPTIONAL MATCH (f)<-[:POST_HAS_CREATOR]-(post:Post)
+WITH f AS friend, c AS city, collect(post) AS posts, count(post) AS postCount, p AS person
+UNWIND posts AS post
+OPTIONAL MATCH (person)-[e:HAS_INTEREST]->()<-[:HAS_TAG]-(post)
+WITH friend, city, postCount, count(e) AS commonPostCount
 RETURN toInteger(substr(id(friend), 2)) AS personId,
        friend.Person.firstName AS personFirstName,
        friend.Person.lastName AS personLastName,
