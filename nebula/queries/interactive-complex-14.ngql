@@ -10,7 +10,9 @@ OPTIONAL MATCH (curr)<-[e:COMMENT_HAS_CREATOR]-(:`Comment`)-[:REPLY_OF_POST]->(:
 WITH count(e) AS cnt1, prev, curr, personIdsInPath
 OPTIONAL MATCH (prev)<-[e:COMMENT_HAS_CREATOR]-(:`Comment`)-[:REPLY_OF_POST]->(:Post)-[:POST_HAS_CREATOR]->(curr)
 WITH count(e) AS cnt2, cnt1, prev, curr, personIdsInPath
-OPTIONAL MATCH (prev)-[e:COMMENT_HAS_CREATOR]-(:`Comment`)-[:REPLY_OF_COMMENT]-(:`Comment`)-[:COMMENT_HAS_CREATOR]-(curr)
-WITH count(e) AS cnt3, cnt1, cnt2, personIdsInPath
-RETURN personIdsInPath, sum(cnt1 + cnt2 + 0.5 * cnt3) AS pathWeight
+OPTIONAL MATCH (prev)<-[e:COMMENT_HAS_CREATOR]-(:`Comment`)-[:REPLY_OF_COMMENT]->(:`Comment`)-[:COMMENT_HAS_CREATOR]->(curr)
+WITH count(e) AS cnt3, cnt1, cnt2, prev, curr, personIdsInPath
+OPTIONAL MATCH (curr)<-[e:COMMENT_HAS_CREATOR]-(:`Comment`)-[:REPLY_OF_COMMENT]->(:`Comment`)-[:COMMENT_HAS_CREATOR]->(prev)
+WITH count(e) AS cnt4, cnt1, cnt2, cnt3, personIdsInPath
+RETURN personIdsInPath, sum(cnt1 + cnt2 + 0.5 * cnt3 + 0.5 * cnt4) AS pathWeight
 ORDER BY pathWeight DESC
