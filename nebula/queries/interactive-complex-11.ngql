@@ -1,1 +1,16 @@
-GO 1 TO 2 STEPS FROM $personId OVER KNOWS BIDIRECT WHERE KNOWS._dst != $personId YIELD distinct KNOWS._dst AS friendId | GO FROM $-.friendId OVER WORK_AT WHERE WORK_AT.workFrom < $workFromYear YIELD $-.friendId AS friendId, $^.Person.firstName AS firstName, $^.Person.lastName AS lastName, WORK_AT.workFrom AS workFrom, WORK_AT._dst AS orgId| GO FROM $-.orgId OVER IS_LOCATED_IN WHERE $$.Place.name == $countryName  YIELD toInteger(substr($-.friendId, 2)) AS personId, $-.firstName AS personFirstName, $-.lastName AS personLastName, $^.Organisation.name AS organizationName, $-.workFrom AS organizationWorkFromYear | ORDER BY $-.organizationWorkFromYear ASC, $-.personId ASC, $-.organizationName DESC | LIMIT 10
+MATCH (person:Person)-[:KNOWS*1..2]-(friend:Person)
+WHERE id(person) == $personId and id(friend) != $personId
+WITH DISTINCT friend
+MATCH (friend)-[workAt:WORK_AT]->(company:Organisation)-[:IS_LOCATED_IN]->(:Place {name: $countryName })
+WHERE workAt.workFrom < $workFromYear
+RETURN
+        id(friend) AS personId,
+        friend.Person.firstName AS personFirstName,
+        friend.Person.lastName AS personLastName,
+        company.Organisation.name AS organizationName,
+        workAt.workFrom AS organizationWorkFromYear
+ORDER BY
+        organizationWorkFromYear ASC,
+        personId ASC,
+        organizationName DESC
+LIMIT 10
