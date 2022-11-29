@@ -422,10 +422,14 @@ public class NebulaDb  extends BaseDb<NebulaQueryStore> {
         }
 
         @Override
-        public LdbcQuery14Result convertSingleResult(ResultSet.Record record) {
+        public LdbcQuery14Result convertSingleResult(ResultSet.Record record) throws UnsupportedEncodingException {
             List<Long> personIdsInPath = new ArrayList<>();
             if (!record.get(0).isNull()) {
-                // TODO: personIdsInPath = record.get(0).asList((e) -> e.asLong());
+                ArrayList<ValueWrapper> values = record.get(0).asList();
+                for (ValueWrapper val : values) {
+                    Long pid = Long.parseLong(val.asString().substring(NebulaID.ID_PREFIX_SIZE));
+                    personIdsInPath.add(pid);
+                }
             }
             double pathWight = record.get(1).asDouble();
             return new LdbcQuery14Result(
