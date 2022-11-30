@@ -1,1 +1,24 @@
-GO 1 to 2 steps from $personId over KNOWS bidirect where KNOWS._dst <> $personId yield distinct KNOWS._dst as friend | GO from $-.friend over POST_HAS_CREATOR reversely yield distinct POST_HAS_CREATOR._dst as friendPost | GO from $-.friendPost over HAS_TAG where $$.`Tag`.name==$tagName yield distinct HAS_TAG._src as postWithSpecifiedTag | GO from $-.postWithSpecifiedTag over HAS_TAG where $$.`Tag`.name<>$tagName yield distinct $$.`Tag`.name as otherTagName, HAS_TAG._src as commonPost | group by $-.otherTagName yield $-.otherTagName as otherTagName, count($-.commonPost) as postCount | order by $-.postCount desc, $-.otherTagName ASC | limit 10
+// GO 1 to 2 steps from $personId over KNOWS bidirect where KNOWS._dst <> $personId yield distinct KNOWS._dst as friend 
+// | GO from $-.friend over POST_HAS_CREATOR reversely yield distinct POST_HAS_CREATOR._dst as friendPost 
+// | GO from $-.friendPost over HAS_TAG where $$.`Tag`.name==$tagName yield distinct HAS_TAG._src as postWithSpecifiedTag 
+// | GO from $-.postWithSpecifiedTag over HAS_TAG where $$.`Tag`.name<>$tagName yield distinct $$.`Tag`.name as otherTagName, HAS_TAG._src as commonPost 
+// | group by $-.otherTagName yield $-.otherTagName as otherTagName, count($-.commonPost) as postCount 
+// | order by $-.postCount desc, $-.otherTagName ASC 
+// | limit 10
+
+MATCH  
+  (knownTag:`Tag` {name:$tagName})<-[:HAS_TAG]-(friendPost:Post),
+  (friendPost:Post)-[:POST_HAS_CREATOR]->(friend:Person)
+MATCH
+    (person:Person)-[:KNOWS*1..2]-(friend)
+    where id(person) == $personId and id(friend) <> $personId
+MATCH (friendPost)-[:HAS_TAG]->(commonTag:`Tag`)
+WHERE id(commonTag) <> id(knownTag)
+WITH DISTINCT commonTag, knownTag, friend
+MATCH (knownTag)<-[:HAS_TAG]-(commonPost:Post) 
+WHERE (commonPost)-[:HAS_TAG]->(commonTag) and (commonPost)-[:POST_HAS_CREATOR]->(friend)
+RETURN
+  commonTag.`Tag`.name AS tagName,
+  count(commonPost) AS postCount
+ORDER BY postCount DESC, tagName ASC
+LIMIT 10
