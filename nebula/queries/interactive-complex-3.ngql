@@ -1,16 +1,8 @@
-MATCH (city:Place)-[:IS_PART_OF]->(country:Place)
-WHERE country.Place.name == $countryXName OR country.Place.name == $countryYName
-WITH  collect(id(city)) AS cities
-MATCH (person)-[:KNOWS*1..2]-(friend)-[:IS_LOCATED_IN]->(city)
-WHERE id(person) == $personId AND id(friend) != $personId AND id(city) NOT IN cities
+MATCH (person)-[:KNOWS*1..2]-(friend)-[:IS_LOCATED_IN]->(:Place)-[:IS_PART_OF]->(country:Place)
+WHERE id(person) == $personId AND id(friend) != $personId AND country.Place.name != $countryXName AND country.Place.name != $countryYName
 WITH DISTINCT friend
-MATCH (friend)<-[:POST_HAS_CREATOR|COMMENT_HAS_CREATOR]-(message)-[:IS_LOCATED_IN]->(country)
-WHERE
-    CASE
-    WHEN  message.`Comment`.creationDate < $startDate+Duration({days:$durationDays}) AND message.`Comment`.creationDate >= $startDate AND (country.Place.name == $countryXName OR country.Place.name == $countryYName) THEN true
-    WHEN message.Post.creationDate < $startDate+Duration({days:$durationDays}) AND message.Post.creationDate >= $startDate AND (country.Place.name == $countryXName OR country.Place.name == $countryYName) THEN true
-    ELSE false
-    END
+MATCH (friend)<-[m:POST_HAS_CREATOR|COMMENT_HAS_CREATOR]-()-[:IS_LOCATED_IN]->(country)
+WHERE m.creationDate <= $startDate+Duration({days:$durationDays}) AND m.creationDate >= $startDate AND country.Place.name IN [$countryXName, $countryYName]
 WITH friend,
      CASE WHEN country.Place.name == $countryXName THEN 1 ELSE 0 END AS messageX,
      CASE WHEN country.Place.name == $countryYName THEN 1 ELSE 0 END AS messageY
@@ -22,5 +14,5 @@ RETURN tointeger(substr(id(friend), 2)) AS friendId,
   xCount,
   yCount,
   xCount + yCount AS xyCount
-  ORDER BY xyCount DESC, friendId ASC
-  LIMIT 20
+ORDER BY xyCount DESC, friendId ASC
+LIMIT 20
