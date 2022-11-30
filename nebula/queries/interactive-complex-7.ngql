@@ -13,7 +13,7 @@ WITH
     liker,
     head(collect({msg:message, likeTime:likeTime})) AS latestLike,
     person
-OPTIONAL MATCH p = (liker)-[:KNOWS]-(person)
+OPTIONAL MATCH (liker)-[e:KNOWS]-(person)
 RETURN
     toInteger(substr(id(liker), 2)) AS personId,
     liker.Person.firstName AS personFirstName,
@@ -27,7 +27,7 @@ RETURN
     ELSE latestLike.msg.content
     END AS messageContent,
     latestLike.msg.creationDate AS messageCreationDate,
-    p IS NULL AS isNew
+    e IS NULL AS isNew
 ORDER BY
     likeCreationDate DESC,
     personId ASC
