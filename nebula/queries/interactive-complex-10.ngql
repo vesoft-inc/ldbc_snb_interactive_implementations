@@ -8,7 +8,7 @@ WHERE (birthday.month==$month AND birthday.day>=21) OR
         (birthday.month==($month%12)+1 AND birthday.day<22)
 WITH DISTINCT friend AS f, city AS c, person AS p
 OPTIONAL MATCH (f)<-[:POST_HAS_CREATOR]-(post:Post)
-WITH f AS friend, c AS city, collect(post) AS posts, count(post) AS postCount, p AS person 
+WITH f AS friend, c AS city, collect(post) AS posts, p AS person 
 WITH friend,
      city,
      size(posts) AS postCount,
