@@ -8,9 +8,9 @@ WHERE (birthday.month==$month AND birthday.day>=21) OR
         (birthday.month==($month%12)+1 AND birthday.day<22)
 WITH DISTINCT friend AS f, city AS c, person AS p
 OPTIONAL MATCH (f)<-[:POST_HAS_CREATOR]-(post:Post)
-OPTIONAL MATCH (p)-[:HAS_INTEREST]->(m)<-[:HAS_TAG]-(post:Post)
-with f AS friend, c AS city, post, CASE WHEN count(m) > 0 THEN 1 ELSE 0 END AS cnt
-with friend, city, sum(cnt) AS commonPostCount, count(post) AS postCount
+OPTIONAL MATCH (p)-[:HAS_INTEREST]->(m), (post)-[:HAS_TAG]->(m)
+WITH f AS friend, c AS city, post, CASE WHEN count(m) > 0 THEN 1 ELSE 0 END AS cnt
+WITH friend, city, sum(cnt) AS commonPostCount, count(post) AS postCount
 RETURN toInteger(substr(id(friend), 2)) AS personId,
        friend.Person.firstName AS personFirstName,
        friend.Person.lastName AS personLastName,
