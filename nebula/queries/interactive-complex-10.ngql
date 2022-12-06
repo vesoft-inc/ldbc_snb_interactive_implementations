@@ -19,5 +19,3 @@ RETURN toInteger(substr(id(friend), 2)) AS personId,
        city.Place.name AS personCityName
 ORDER BY commonInterestScore DESC, personId ASC
 LIMIT 10
-
-
