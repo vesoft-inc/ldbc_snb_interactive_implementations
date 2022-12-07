@@ -6,13 +6,13 @@ WITH
   [idx IN range(1, size(pathNodes)-1) | [prev IN [pathNodes[idx-1]] | [curr IN [pathNodes[idx]] | [prev, curr]]]] AS vertList
 UNWIND vertList AS c
 WITH c[0][0][0] AS prev, c[0][0][1] AS curr, personIdsInPath
-OPTIONAL MATCH (curr)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`), (prev)<-[:POST_HAS_CREATOR]-(:Post)<-[:REPLY_OF_POST]-(comm)
-WITH count(comm) AS cnt1, prev, curr, personIdsInPath
-OPTIONAL MATCH (prev)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`), (curr)<-[:POST_HAS_CREATOR]-(:Post)<-[:REPLY_OF_POST]-(comm)
-WITH count(comm) AS cnt2, cnt1, prev, curr, personIdsInPath
-OPTIONAL MATCH (prev)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`)-[:REPLY_OF_COMMENT]->(comm2:`Comment`), (curr)<-[:COMMENT_HAS_CREATOR]-(comm2)
-WITH count(comm) AS cnt3, cnt1, cnt2, prev, curr, personIdsInPath
-OPTIONAL MATCH (curr)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`)-[:REPLY_OF_COMMENT]->(comm2:`Comment`), (prev)<-[:COMMENT_HAS_CREATOR]-(comm2)
-WITH count(comm) AS cnt4, cnt1, cnt2, cnt3, prev, curr, personIdsInPath
+OPTIONAL MATCH (curr)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`), (prev)<-[:POST_HAS_CREATOR]-(:Post)<-[:REPLY_OF_POST]-(comm:`Comment`)
+WITH count(id(comm)) AS cnt1, prev, curr, personIdsInPath
+OPTIONAL MATCH (prev)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`), (curr)<-[:POST_HAS_CREATOR]-(:Post)<-[:REPLY_OF_POST]-(comm:`Comment`)
+WITH count(id(comm)) AS cnt2, cnt1, prev, curr, personIdsInPath
+OPTIONAL MATCH (prev)<-[:COMMENT_HAS_CREATOR]-(:`Comment`)-[:REPLY_OF_COMMENT]->(comm:`Comment`), (curr)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`)
+WITH count(id(comm)) AS cnt3, cnt1, cnt2, prev, curr, personIdsInPath
+OPTIONAL MATCH (curr)<-[:COMMENT_HAS_CREATOR]-(:`Comment`)-[:REPLY_OF_COMMENT]->(comm:`Comment`), (prev)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`)
+WITH count(id(comm)) AS cnt4, cnt1, cnt2, cnt3, prev, curr, personIdsInPath
 RETURN personIdsInPath, sum(cnt1 + cnt2 + 0.5 * cnt3 + 0.5 * cnt4) AS pathWeight
 ORDER BY pathWeight DESC, personIdsInPath ASC

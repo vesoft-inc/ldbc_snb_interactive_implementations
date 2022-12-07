@@ -1,1 +1,3 @@
-find shortest path from $person1Id to $person2Id over KNOWS BIDIRECT yield path as p|yield collect(length($-.p)) AS l | yield case size($-.l) when 0 then -1 else $-.l[0] end;
+find shortest path from $person1Id to $person2Id over KNOWS BIDIRECT yield path as p |
+yield collect(length($-.p)) AS l |
+yield case size($-.l) when 0 then -1 else $-.l[0] end;

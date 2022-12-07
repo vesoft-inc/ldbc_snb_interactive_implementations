@@ -1,19 +1,12 @@
 MATCH (person:Person)<-[:POST_HAS_CREATOR|COMMENT_HAS_CREATOR]-(message)<-[like:LIKES_COMMENT|LIKES_POST]-(liker:Person)
-  WHERE id(person) == $personId
-WITH
-    liker,
-    message,
-    like.creationDate AS likeTime,
-    person,
-    id(message) AS messageId
-ORDER BY
-    likeTime DESC,
-    messageId ASC
+WHERE id(person) == $personId
+WITH liker, message, like.creationDate AS likeTime, person, id(message) AS messageId
+ORDER BY likeTime DESC, messageId ASC
 WITH
     liker,
     head(collect({msg:message, likeTime:likeTime})) AS latestLike,
     person
-OPTIONAL MATCH (liker)-[e:KNOWS]-(person)
+OPTIONAL MATCH (person)-[e:KNOWS]-(liker)
 RETURN
     toInteger(substr(id(liker), 2)) AS personId,
     liker.Person.firstName AS personFirstName,

@@ -1,10 +1,25 @@
-GO FROM $personId OVER KNOWS BIDIRECT YIELD KNOWS._dst AS friendId
-| GO FROM $-.friendId OVER POST_HAS_CREATOR, COMMENT_HAS_CREATOR REVERSELY WHERE (COMMENT_HAS_CREATOR.creationDate is not EMPTY and COMMENT_HAS_CREATOR.creationDate <= $maxDate) or (POST_HAS_CREATOR.creationDate is not EMPTY and POST_HAS_CREATOR.creationDate <= $maxDate)
+GO FROM $personId OVER KNOWS BIDIRECT YIELD KNOWS._dst AS friendId |
+GO FROM $-.friendId OVER POST_HAS_CREATOR, COMMENT_HAS_CREATOR REVERSELY
+WHERE
+  (COMMENT_HAS_CREATOR.creationDate is not EMPTY and COMMENT_HAS_CREATOR.creationDate <= $maxDate) or (POST_HAS_CREATOR.creationDate is not EMPTY and POST_HAS_CREATOR.creationDate <= $maxDate)
 YIELD
-    toInteger(substr($-.friendId, 2)) AS personId,
-    $^.Person.firstName AS personFirstName,
-    $^.Person.lastName AS personLastName,
-    toInteger(substr(id($$), 2)) AS messageId,
-    CASE WHEN COMMENT_HAS_CREATOR.content is not EMPTY THEN COMMENT_HAS_CREATOR.content ELSE CASE size(POST_HAS_CREATOR.imageFile) WHEN 0 THEN POST_HAS_CREATOR.content ELSE POST_HAS_CREATOR.imageFile END END AS messageContent,
-    CASE WHEN COMMENT_HAS_CREATOR.creationDate is not EMPTY THEN COMMENT_HAS_CREATOR.creationDate ELSE POST_HAS_CREATOR.creationDate END AS messageCreationDate
-     | ORDER BY $-.messageCreationDate DESC, $-.messageId ASC | LIMIT 20
+  toInteger(substr($-.friendId, 2)) AS personId,
+  $^.Person.firstName AS personFirstName,
+  $^.Person.lastName AS personLastName,
+  toInteger(substr(id($$), 2)) AS messageId,
+  CASE
+    WHEN COMMENT_HAS_CREATOR.content is not EMPTY
+         THEN COMMENT_HAS_CREATOR.content
+    ELSE
+      CASE size(POST_HAS_CREATOR.imageFile)
+           WHEN 0 THEN POST_HAS_CREATOR.content
+           ELSE POST_HAS_CREATOR.imageFile
+      END
+  END AS messageContent,
+  CASE
+    WHEN COMMENT_HAS_CREATOR.creationDate is not EMPTY
+         THEN COMMENT_HAS_CREATOR.creationDate
+    ELSE POST_HAS_CREATOR.creationDate
+  END AS messageCreationDate |
+ORDER BY $-.messageCreationDate DESC, $-.messageId ASC |
+LIMIT 20

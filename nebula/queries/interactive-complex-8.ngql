@@ -1,1 +1,11 @@
-GO FROM $personId OVER POST_HAS_CREATOR, COMMENT_HAS_CREATOR REVERSELY YIELD id($$) AS messageId | GO FROM $-.messageId OVER REPLY_OF_COMMENT, REPLY_OF_POST REVERSELY YIELD id($$) AS commentId | GO FROM $-.commentId OVER COMMENT_HAS_CREATOR YIELD COMMENT_HAS_CREATOR._dst AS personId, $$.Person.firstName AS personFirstName, $$.Person.lastName AS personLastName, $^.`Comment`.creationDate AS commentCreationDate, toInteger(substr($-.commentId, 2)) AS commentId, $^.`Comment`.content AS commentContent |ORDER BY $-.commentCreationDate DESC, $-.commentId ASC|LIMIT 20
+GO FROM $personId OVER POST_HAS_CREATOR, COMMENT_HAS_CREATOR REVERSELY YIELD id($$) AS messageId |
+GO FROM $-.messageId OVER REPLY_OF_COMMENT, REPLY_OF_POST REVERSELY YIELD id($$) AS commentId |
+GO FROM $-.commentId OVER COMMENT_HAS_CREATOR
+   YIELD COMMENT_HAS_CREATOR._dst AS personId,
+         $$.Person.firstName AS personFirstName,
+         $$.Person.lastName AS personLastName,
+         $^.`Comment`.creationDate AS commentCreationDate,
+         toInteger(substr($-.commentId, 2)) AS commentId,
+         $^.`Comment`.content AS commentContent |
+ORDER BY $-.commentCreationDate DESC, $-.commentId ASC |
+LIMIT 20
