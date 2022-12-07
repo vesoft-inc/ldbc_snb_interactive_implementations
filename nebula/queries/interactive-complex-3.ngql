@@ -1,7 +1,7 @@
 MATCH (person)-[:KNOWS*1..2]-(friend)-[:IS_LOCATED_IN]->(:Place)-[:IS_PART_OF]->(country:Place)
-WHERE id(person) == $personId AND id(friend) != $personId AND country.Place.name != $countryXName AND country.Place.name != $countryYName
+WHERE id(person) == $personId AND id(friend) != $personId AND country.Place.name NOT IN [$countryXName, $countryYName]
 WITH DISTINCT friend
-MATCH (friend)<-[m:POST_HAS_CREATOR|COMMENT_HAS_CREATOR]-()-[:IS_LOCATED_IN]->(country)
+MATCH (friend)<-[m:POST_HAS_CREATOR|COMMENT_HAS_CREATOR]-(message), (message)-[:IS_LOCATED_IN]->(country)
 WHERE m.creationDate <= $startDate+Duration({days:$durationDays}) AND m.creationDate >= $startDate AND country.Place.name IN [$countryXName, $countryYName]
 WITH friend,
      CASE WHEN country.Place.name == $countryXName THEN 1 ELSE 0 END AS messageX,
