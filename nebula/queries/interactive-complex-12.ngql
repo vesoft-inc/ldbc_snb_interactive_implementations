@@ -1,13 +1,13 @@
 MATCH (tag1:`Tag`)-[:HAS_TYPE|IS_SUBCLASS_OF*0..6]->(baseTagClass:Tagclass)
 WHERE tag1.`Tag`.name == $tagClassName OR baseTagClass.Tagclass.name == $tagClassName
-WITH collect(id(tag1)) as T
-MATCH (p:Person)-[:KNOWS]-(friend:Person)<-[:COMMENT_HAS_CREATOR]-(comment1:`Comment`)-[:REPLY_OF_POST]->(:Post)-[:HAS_TAG]->(tag2:`Tag`)
-WHERE id(p) == $personId AND id(tag2) in T
+MATCH (p:Person)-[:KNOWS]-(friend:Person)<-[:COMMENT_HAS_CREATOR]-(comment1:`Comment`),
+      (tag1:`Tag`)<-[:HAS_TAG]-(:Post)<-[:REPLY_OF_POST]->(comment1:`Comment`)
+WHERE id(p) == $personId
 RETURN
     toInteger(substr(id(friend),2)) AS personId,
     friend.Person.firstName AS personFirstName,
     friend.Person.lastName AS personLastName,
-    collect(DISTINCT tag2.`Tag`.name) AS tagNames,
+    collect(DISTINCT tag1.`Tag`.name) AS tagNames,
     count(DISTINCT id(comment1)) AS replyCount
 ORDER BY
     replyCount DESC,

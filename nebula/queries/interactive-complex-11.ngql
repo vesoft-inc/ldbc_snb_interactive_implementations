@@ -1,1 +1,15 @@
-GO 1 TO 2 STEPS FROM $personId OVER KNOWS BIDIRECT WHERE KNOWS._dst != $personId YIELD distinct KNOWS._dst AS friendId | GO FROM $-.friendId OVER WORK_AT WHERE WORK_AT.workFrom < $workFromYear YIELD $-.friendId AS friendId, $^.Person.firstName AS firstName, $^.Person.lastName AS lastName, WORK_AT.workFrom AS workFrom, WORK_AT._dst AS orgId| GO FROM $-.orgId OVER IS_LOCATED_IN WHERE $$.Place.name == $countryName  YIELD toInteger(substr($-.friendId, 2)) AS personId, $-.firstName AS personFirstName, $-.lastName AS personLastName, $^.Organisation.name AS organizationName, $-.workFrom AS organizationWorkFromYear | ORDER BY $-.organizationWorkFromYear ASC, $-.personId ASC, $-.organizationName DESC | LIMIT 10
+GO 1 TO 2 STEPS FROM $personId OVER KNOWS BIDIRECT WHERE KNOWS._dst != $personId YIELD distinct KNOWS._dst AS friendId |
+GO FROM $-.friendId OVER WORK_AT WHERE WORK_AT.workFrom < $workFromYear
+   YIELD $-.friendId AS friendId,
+         $^.Person.firstName AS firstName,
+         $^.Person.lastName AS lastName,
+         WORK_AT.workFrom AS workFrom,
+         WORK_AT._dst AS orgId |
+GO FROM $-.orgId OVER IS_LOCATED_IN WHERE $$.Place.name == $countryName
+   YIELD toInteger(substr($-.friendId, 2)) AS personId,
+         $-.firstName AS personFirstName,
+         $-.lastName AS personLastName,
+         $^.Organisation.name AS organizationName,
+         $-.workFrom AS organizationWorkFromYear |
+ORDER BY $-.organizationWorkFromYear ASC, $-.personId ASC, $-.organizationName DESC |
+LIMIT 10
