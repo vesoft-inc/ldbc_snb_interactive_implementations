@@ -15,4 +15,4 @@ WITH count(comm) AS cnt3, cnt1, cnt2, prev, curr, personIdsInPath
 OPTIONAL MATCH (curr)<-[:COMMENT_HAS_CREATOR]-(comm:`Comment`)-[:REPLY_OF_COMMENT]->(comm2:`Comment`), (prev)<-[:COMMENT_HAS_CREATOR]-(comm2)
 WITH count(comm) AS cnt4, cnt1, cnt2, cnt3, prev, curr, personIdsInPath
 RETURN personIdsInPath, sum(cnt1 + cnt2 + 0.5 * cnt3 + 0.5 * cnt4) AS pathWeight
-ORDER BY pathWeight DESC, personIdsInPath DESC
+ORDER BY pathWeight DESC, personIdsInPath ASC
