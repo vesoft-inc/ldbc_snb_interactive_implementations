@@ -14,6 +14,7 @@ public abstract class NebulaUpdateOperationHandler <TOperation extends Operation
     @Override
     public void executeOperation(TOperation operation, NebulaDbConnectionState state, ResultReporter resultReporter) throws DbException {
         Session session = state.getSession();
+        long startTime = System.currentTimeMillis();
             try {
                 final String queryString = getQueryString(state, operation);
                 state.logQuery(operation.getClass().getSimpleName(), queryString);
@@ -23,6 +24,11 @@ public abstract class NebulaUpdateOperationHandler <TOperation extends Operation
                 }
             } catch (Exception e) {
                 throw new DbException(e);
+            } finally {
+                long threadID = Thread.currentThread().getId();
+                long consumeTime = (System.currentTimeMillis() - startTime) / 1000;
+                System.out.println("Query SimpleName : " + operation.getClass().getSimpleName());
+                System.out.println("threadID : " + threadID + " consumeTime : " + consumeTime);
             }
             resultReporter.report(0, LdbcNoResult.INSTANCE, operation);
     }
