@@ -46,6 +46,14 @@ public abstract class NebulaListOperationHandler <TOperation extends Operation<L
 
         } catch (Exception e) {
             throw new DbException(e);
+        } finally {
+            long threadID = Thread.currentThread().getId();
+            long consumeTime = (System.currentTimeMillis() - startTime);
+            String name = operation.getClass().getSimpleName();
+            if (name.startsWith("LdbcQuery")) {
+                // only output IC query
+                System.out.println("Query SimpleName : " + name + " threadID : " + threadID + " startTime : " + startTime / 1000 + " consumeTime : " + consumeTime + "ms");
+            }
         }
     }
 

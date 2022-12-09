@@ -27,6 +27,10 @@ public abstract class NebulaMultipleUpdateOperationHandler<TOperation extends Op
             }
         } catch (Exception e) {
             throw new DbException(e);
+        } finally {
+            long threadID = Thread.currentThread().getId();
+            long consumeTime = (System.currentTimeMillis() - startTime) / 1000;
+            // System.out.println("Query SimpleName : " + operation.getClass().getSimpleName() + " threadID : " + threadID + " startTime : " + startTime / 1000 + " consumeTime : " + consumeTime);
         }
         resultReporter.report(0, LdbcNoResult.INSTANCE, operation);
     }
