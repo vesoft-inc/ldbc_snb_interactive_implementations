@@ -28,7 +28,7 @@ public abstract class NebulaUpdateOperationHandler <TOperation extends Operation
                 long threadID = Thread.currentThread().getId();
                 long consumeTime = (System.currentTimeMillis() - startTime) / 1000;
                 System.out.println("Query SimpleName : " + operation.getClass().getSimpleName());
-                System.out.println("threadID : " + threadID + " consumeTime : " + consumeTime);
+                System.out.println("threadID : " + threadID + " startTime : " + startTime / 1000 + " consumeTime : " + consumeTime);
             }
             resultReporter.report(0, LdbcNoResult.INSTANCE, operation);
     }
