@@ -16,7 +16,6 @@ public abstract class NebulaMultipleUpdateOperationHandler<TOperation extends Op
     @Override
     public void executeOperation(TOperation operation, NebulaDbConnectionState state, ResultReporter resultReporter) throws DbException {
         Session session = state.getSession();
-        long startTime = System.currentTimeMillis();
         try {
             List<String> queryStrings = getQueryString(state, operation);
             for (String queryString : queryStrings) {

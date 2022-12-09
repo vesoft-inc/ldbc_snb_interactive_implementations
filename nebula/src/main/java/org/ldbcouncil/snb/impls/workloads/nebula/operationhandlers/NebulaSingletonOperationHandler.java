@@ -16,10 +16,10 @@ public abstract class NebulaSingletonOperationHandler <TOperation extends Operat
     @Override
     public void executeOperation(TOperation operation, NebulaDbConnectionState state, ResultReporter resultReporter) throws DbException {
         Session session = state.getSession();
-        long startTime = System.currentTimeMillis();
         try {
             TOperationResult tuple = null;
             int resultCount = 0;
+
             final String queryString = getQueryString(state, operation);
             state.logQuery(operation.getClass().getSimpleName(), queryString);
             final ResultSet result = session.execute(queryString);
@@ -52,7 +52,6 @@ public abstract class NebulaSingletonOperationHandler <TOperation extends Operat
                 // only output IC query
                 System.out.println("Query SimpleName : " + name + " threadID : " + threadID + " startTime : " + startTime / 1000 + " consumeTime : " + consumeTime + "ms");
             }
-
         }
     }
 

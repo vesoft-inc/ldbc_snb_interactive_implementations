@@ -26,7 +26,6 @@ public abstract class NebulaListOperationHandler <TOperation extends Operation<L
         final String queryString = getQueryString(state, operation);
         state.logQuery(operation.getClass().getSimpleName(), queryString);
         final ResultSet result;
-        long startTime = System.currentTimeMillis();
         try {
             result = session.execute(queryString);
             if (state.isPrintErrors() && !result.isSucceeded()) {
