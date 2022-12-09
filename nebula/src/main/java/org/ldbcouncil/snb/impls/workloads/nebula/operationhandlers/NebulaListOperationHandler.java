@@ -22,7 +22,7 @@ public abstract class NebulaListOperationHandler <TOperation extends Operation<L
         List<TOperationResult> results = new ArrayList<>();
         int resultCount = 0;
         results.clear();
-
+        long startTime = System.currentTimeMillis();
         final String queryString = getQueryString(state, operation);
         state.logQuery(operation.getClass().getSimpleName(), queryString);
         final ResultSet result;

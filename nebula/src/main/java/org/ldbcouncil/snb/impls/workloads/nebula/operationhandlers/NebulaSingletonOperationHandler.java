@@ -16,6 +16,7 @@ public abstract class NebulaSingletonOperationHandler <TOperation extends Operat
     @Override
     public void executeOperation(TOperation operation, NebulaDbConnectionState state, ResultReporter resultReporter) throws DbException {
         Session session = state.getSession();
+        long startTime = System.currentTimeMillis();
         try {
             TOperationResult tuple = null;
             int resultCount = 0;
