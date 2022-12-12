@@ -39,9 +39,10 @@ public class NebulaDbConnectionState  extends BaseDbConnectionState<NebulaQueryS
         String endPoint = properties.get("endpoint");
         spaceName = properties.get("spaceName");
         printErrors = Boolean.parseBoolean(properties.get("printErrors"));
+        int maxConnSize = Integer.parseInt(properties.get("max_conn_size"));
 
         NebulaPoolConfig nebulaPoolConfig = new NebulaPoolConfig();
-        nebulaPoolConfig.setMaxConnSize(500);
+        nebulaPoolConfig.setMaxConnSize(maxConnSize);
         List<HostAddress> addresses = new ArrayList<>();
         for (String ipPort : endPoint.split(",")) {
             String[] ipPortPair = ipPort.split(":");
