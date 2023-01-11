@@ -19,9 +19,9 @@ public enum QueryType {
        InteractiveComplexQuery12("interactive-complex-12"),
        InteractiveComplexQuery13("interactive-complex-13"),
        InteractiveComplexQuery14("interactive-complex-14"),
-       // InteractiveComplexQuery3DurationAsFunction ("interactive-complex-3-duration-as-function" ),
-       // InteractiveComplexQuery4DurationAsFunction ("interactive-complex-4-duration-as-function" ),
-       // InteractiveComplexQuery7WithSecond("interactive-complex-7-with-second"),
+       InteractiveComplexQuery3DurationAsFunction ("interactive-complex-3-duration-as-function" ),
+       InteractiveComplexQuery4DurationAsFunction ("interactive-complex-4-duration-as-function" ),
+       InteractiveComplexQuery7WithSecond("interactive-complex-7-with-second"),
 
        // interactive short queries
        InteractiveShortQuery1("interactive-short-1"),
@@ -33,13 +33,13 @@ public enum QueryType {
        InteractiveShortQuery7("interactive-short-7"),
 
        // interactive updates (single queries)
-       // InteractiveUpdate1("interactive-update-1"),
+       InteractiveUpdate1("interactive-update-1"),
        InteractiveUpdate2("interactive-update-2"),
        InteractiveUpdate3("interactive-update-3"),
-       // InteractiveUpdate4("interactive-update-4"),
+       InteractiveUpdate4("interactive-update-4"),
        InteractiveUpdate5("interactive-update-5"),
-       // InteractiveUpdate6("interactive-update-6"),
-       // InteractiveUpdate7("interactive-update-7"),
+       InteractiveUpdate6("interactive-update-6"),
+       InteractiveUpdate7("interactive-update-7"),
        InteractiveUpdate8("interactive-update-8"),
 
        // interactive updates (additional queries for systems that perform them as multiple queries)
@@ -66,8 +66,8 @@ public enum QueryType {
        InteractiveUpdate7AddCommentPerson     ("interactive-update-7-add-comment-person"),
 
        // interactive updates (additional queries for system that insert content/imageFile using separate operations)
-       // InteractiveUpdate6AddPostContent       ("interactive-update-6-add-post-content"),
-       // InteractiveUpdate6AddPostImageFile     ("interactive-update-6-add-post-imagefile"),
+       InteractiveUpdate6AddPostContent       ("interactive-update-6-add-post-content"),
+       InteractiveUpdate6AddPostImageFile     ("interactive-update-6-add-post-imagefile"),
        InteractiveUpdate6AddPostPlace         ("interactive-update-6-add-post-place"),
        InteractiveUpdate6AddPostPerson        ("interactive-update-6-add-post-person"),
        InteractiveUpdate6AddPostForum         ("interactive-update-6-add-post-forum"),
