@@ -38,8 +38,8 @@ public class NebulaDbConnectionState  extends BaseDbConnectionState<NebulaQueryS
         password = properties.get("password");
         String endPoint = properties.get("endpoint");
         spaceName = properties.get("spaceName");
-        printErrors = Boolean.parseBoolean(properties.get("printErrors"));
-        int maxConnSize = Integer.parseInt(properties.get("max_conn_size"));
+        printErrors = Boolean.parseBoolean(properties.getOrDefault("printErrors", "false"));
+        int maxConnSize = Integer.parseInt(properties.getOrDefault("max_conn_size", "500"));
 
         NebulaPoolConfig nebulaPoolConfig = new NebulaPoolConfig();
         nebulaPoolConfig.setMaxConnSize(maxConnSize);
