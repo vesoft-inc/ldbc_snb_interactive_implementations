@@ -17,9 +17,9 @@ RETURN
           CASE WHEN size(latestLike.msg.imageFile) == 0 THEN latestLike.msg.content
           ELSE latestLike.msg.imageFile
           END
-    ELSE latestLike.msg.content
+    ELSE latestLike.msg.`Comment`.content
     END AS messageContent,
-    latestLike.msg.creationDate AS messageCreationDate,
+    latestLike.msg.`Comment`.creationDate AS messageCreationDate,
     e IS NULL AS isNew
 ORDER BY
     likeCreationDate DESC,
