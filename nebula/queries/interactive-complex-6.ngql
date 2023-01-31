@@ -1,7 +1,7 @@
 MATCH (person:Person)-[:KNOWS*1..2]-(friend:Person)
 WHERE id(person) == $personId AND id(friend) != $personId
 WITH DISTINCT friend
-MATCH (knownTag:`Tag`{name: $tagName})<-[:HAS_TAG]-(post:Post)-[:HAS_TAG]->(t:`Tag`)
+MATCH (knownTag:`Tag`{name: $tagName})<-[:HAS_TAG]-(post:Post)-[:HAS_TAG]->(t:`Tag`),
       (post)-[:POST_HAS_CREATOR]->(friend:Person)
 WHERE t.`Tag`.name != $tagName
 RETURN t.`Tag`.name AS tagName, count(id(post)) AS postCount
