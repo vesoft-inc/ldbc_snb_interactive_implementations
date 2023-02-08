@@ -1,11 +1,7 @@
 name: pull_request
 
 on:
-  pull_request:
-    types: [synchronize, opened]
-    branches:
-      - master
-      - nebula1.2.0
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.head_ref }}
@@ -17,7 +13,7 @@ defaults:
 
 jobs:
   build:
-    name: build
+    name: run benchmark
     runs-on: ubuntu-latest
 
     steps:
