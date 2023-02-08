@@ -19,7 +19,22 @@
    ./build.sh
    ```
 
-3. For each implementation, it is possible to (1) create validation parameters, (2) validate against an existing validation parameters, and (3) run the benchmark. Set the parameters according to your system configuration in the appropriate `.properties` file and run the driver with one of the following scripts:
+3. Load data into nebula graph
+
+```
+# by default, load the data in `127.0.0.1:9669` with space `sf0_1`.
+./nebula/scripts/load.sh
+
+# or pass the environments.
+
+SCALE_FACTOR=10 \
+NEBULA_ADDRESS=192.168.15.8:9669 \
+NEBULA_SPACE=sf10 \
+./nebula/scripts/load.sh
+
+```
+
+4. For each implementation, it is possible to (1) create validation parameters, (2) validate against an existing validation parameters, and (3) run the benchmark. Set the parameters according to your system configuration in the appropriate `.properties` file and run the driver with one of the following scripts:
 
    ```bash
    # Interactive workload - note that if the workload contains updates, the database needs to be re-loaded between steps
