@@ -14,12 +14,15 @@ RETURN
     latestLike.likeTime AS likeCreationDate,
     id(latestLike.msg) AS messageId,
     CASE WHEN tags(latestLike.msg) == ["Post"] THEN
-          CASE WHEN size(latestLike.msg.imageFile) == 0 THEN latestLike.msg.content
-          ELSE latestLike.msg.imageFile
+          CASE WHEN size(latestLike.msg.`Post`.imageFile) == 0 THEN latestLike.msg.`Post`.content
+          ELSE latestLike.msg.`Post`.imageFile
           END
     ELSE latestLike.msg.`Comment`.content
     END AS messageContent,
-    latestLike.msg.`Comment`.creationDate AS messageCreationDate,
+    CASE WHEN tags(latestLike.msg) == ["Post"] THEN
+        latestLike.msg.`Post`.creationDate
+        ELSE latestLike.msg.`Comment`.creationDate
+    END  as messageCreationDate,
     e IS NULL AS isNew
 ORDER BY
     likeCreationDate DESC,
