@@ -1,12 +1,17 @@
-MATCH (person:Person)-[:KNOWS]-(:Person)<-[:POST_HAS_CREATOR]-(post:Post), (post)-[:HAS_TAG]->(`tag`:`Tag`)
-WHERE id(person) == $personId AND post.Post.creationDate >= $startDate AND post.Post.creationDate < $endDate
-WITH person, count(post) AS postsOnTag, `tag`
-OPTIONAL MATCH (person)-[:KNOWS]-()<-[:POST_HAS_CREATOR]-(oldPost:Post), (oldPost)-[:HAS_TAG]->(`tag`)
-WHERE oldPost.Post.creationDate < $startDate
-WITH person, postsOnTag, `tag`, count(oldPost) AS cp
-WHERE cp == 0
-RETURN
-  `tag`.`Tag`.name AS tagName,
-  sum(postsOnTag) AS postCount
+MATCH (person:Person)-[:KNOWS]-(friend:Person)<-[:POST_HAS_CREATOR]-(post:Post)-[:HAS_TAG]->(`tag`:`Tag`)
+WHERE id(person) == $personId
+WITH DISTINCT `tag`.`Tag`.name AS tagName, post.Post.creationDate AS creationDate
+WITH tagName,
+     CASE
+       WHEN creationDate >= $startDate AND creationDate < $endDate THEN 1
+       ELSE 0
+     END AS valid,
+     CASE
+       WHEN creationDate < $startDate THEN 1
+       ELSE 0
+     END AS inValid
+WITH tagName, sum(valid) AS postCount, sum(inValid) AS inValidPostCount
+WHERE postCount > 0 AND inValidPostCount == 0
+RETURN  tagName, postCount
 ORDER BY postCount DESC, tagName ASC
 LIMIT 10
