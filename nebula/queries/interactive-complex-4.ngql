@@ -1,6 +1,6 @@
 MATCH (person:Person)-[:KNOWS]-(friend:Person)<-[:POST_HAS_CREATOR]-(post:Post)-[:HAS_TAG]->(`tag`:`Tag`)
 WHERE id(person) == $personId
-WITH DISTINCT `tag`.`Tag`.name AS tagName, post.Post.creationDate AS creationDate
+WITH `tag`.`Tag`.name AS tagName, post.Post.creationDate AS creationDate
 WITH tagName,
      CASE
        WHEN creationDate >= $startDate AND creationDate < $endDate THEN 1
